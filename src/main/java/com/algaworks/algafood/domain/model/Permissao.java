@@ -2,14 +2,13 @@ package com.algaworks.algafood.domain.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Cidade {
+public class Permissao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +18,6 @@ public class Cidade {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Estado estado;
+    @Column(nullable = false)
+    private String descricao;
 }

@@ -1,15 +1,17 @@
 package com.algaworks.algafood.infrastructure.repository;
 
 import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.repository.CidadeRespository;
+import com.algaworks.algafood.domain.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 @Component
-public class CidadeRepositoryImpl implements CidadeRespository {
+public class CidadeRepositoryImpl implements CidadeRepository {
 
     @Autowired
     private EntityManager manager;
@@ -25,13 +27,16 @@ public class CidadeRepositoryImpl implements CidadeRespository {
     }
 
     @Override
+    @Transactional
     public Cidade salvar(Cidade cidade) {
         return manager.merge(cidade);
     }
 
     @Override
-    public void remover(Cidade cidade) {
-        cidade = buscar(cidade.getId());
+    @Transactional
+    public void remover(Long cidadeid) {
+        Cidade cidade = buscar(cidadeid);
+        if (cidade == null) throw new EmptyResultDataAccessException(1);
         manager.remove(cidade);
     }
 }

@@ -11,8 +11,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CadastroCidadeService {
 
@@ -20,15 +18,19 @@ public class CadastroCidadeService {
     private CidadeRepository cidadeRepository;
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    private CadastroEstadoService cadastroEstado;
+
+    public Cidade buscar(Long cidadeId) {
+        return cidadeRepository.findById(cidadeId).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(getMsgCidadeNaoCadastrada(cidadeId)));
+    }
+
+    private String getMsgCidadeNaoCadastrada(Long cidadeId) {
+        return String.format("Não existe um cadastro de cidade com código %d", cidadeId);
+    }
 
     public Cidade salvar(Cidade cidade) {
-        Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.findById(estadoId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Não existe um estado cadastrado como código %d", estadoId)));
-
-        cidade.setEstado(estado);
+        cidade.setEstado(cadastroEstado.buscar(cidade.getEstado().getId()));
         return cidadeRepository.save(cidade);
     }
 
@@ -37,11 +39,11 @@ public class CadastroCidadeService {
             cidadeRepository.deleteById(cidadeId);
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cidade com código %d", cidadeId));
-//        } catch (DataIntegrityViolationException e) {
-//            throw new EntidadeEmUsoException(
-//                    String.format("Cidade de código %d não pode ser removidapois")\
-//            )
+                    getMsgCidadeNaoCadastrada(cidadeId));
+    } catch (DataIntegrityViolationException e) {
+        throw new EntidadeEmUsoException(
+                String.format("Cidade de código %d não pode ser removida pois está em uso", cidadeId)
+        );
         }
     }
 }

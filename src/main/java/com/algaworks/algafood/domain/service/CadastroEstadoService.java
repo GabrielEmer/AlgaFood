@@ -15,6 +15,10 @@ public class CadastroEstadoService {
     @Autowired
     private EstadoRepository estadoRepository;
 
+    public Estado buscar(Long estadoId) {
+        return estadoRepository.findById(estadoId).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(getMsgEstadoNaoCadastrado(estadoId)));
+    }
     public Estado salvar(Estado estado) {
         return estadoRepository.save(estado);
     }
@@ -24,10 +28,14 @@ public class CadastroEstadoService {
             estadoRepository.deleteById(estadoId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de Estado com código %d", estadoId));
+                    getMsgEstadoNaoCadastrado(estadoId));
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format("Estado de código %d não pode ser removida, pois está em uso.", estadoId));
         }
+    }
+
+    private String getMsgEstadoNaoCadastrado(Long estadoId) {
+        return String.format("Não existe um cadastro de Estado com código %d", estadoId);
     }
 }

@@ -17,15 +17,17 @@ public class CadastroRestauranteService {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
+    private CadastroCozinhaService cadastroCozinha;
 
     public Restaurante salvar(Restaurante restaurante) {
-        Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format("Não eiste cadastro de cozinha com código %d", cozinhaId)));
-
-        restaurante.setCozinha(cozinha);
+        restaurante.setCozinha(cadastroCozinha.buscar(restaurante.getCozinha().getId()));
         return restauranteRepository.save(restaurante);
+    }
+
+    public Restaurante buscar(Long restauranteId) {
+        return restauranteRepository.findById(restauranteId).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format("Restaurante de código %d não encontrado.", restauranteId))
+                    );
     }
 }

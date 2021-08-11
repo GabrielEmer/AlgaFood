@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,8 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-        return cadastroRestaurante.salvar(restaurante);
+
+        return salvarRestaurante(restaurante);
     }
 
     @PutMapping("/{restauranteId}")
@@ -51,7 +53,15 @@ public class RestauranteController {
         BeanUtils.copyProperties(restaurante, restauranteAtual,
           "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
-        return ResponseEntity.ok(cadastroRestaurante.salvar(restauranteAtual));
+        return ResponseEntity.ok(salvarRestaurante(restauranteAtual));
+    }
+
+    private Restaurante salvarRestaurante(Restaurante restaurante) {
+        try {
+            return cadastroRestaurante.salvar(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(String.format("Não existe um cadastro de cozinha com o código %d.", restaurante.getCozinha().getId()));
+        }
     }
 
     @PatchMapping("/{restauranteId}")

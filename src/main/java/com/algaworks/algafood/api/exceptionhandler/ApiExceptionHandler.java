@@ -19,18 +19,20 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se " +
+            "o problema persistir, entre em contato com o administrador do sistema";
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleUncaught(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        Problem problem = createProblemBuilder(status, ProblemType.ERRO_DE_SISTEMA,
-                "Ocorreu um erro interno inesperado no sistema. Tente novamente e se " +
-                        "o problema persistir, entre em contato com o administrador do sistema").build();
+        Problem problem = createProblemBuilder(status, ProblemType.ERRO_DE_SISTEMA, MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 
         ex.printStackTrace();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -108,43 +110,53 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADA, ex.getMessage()).build();
-
+        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADA, ex.getMessage())
+                .userMessage(ex.getMessage())
+                .build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        Problem problem = createProblemBuilder(status, ProblemType.ERRO_NEGOCIO, ex.getMessage()).build();
+        Problem problem = createProblemBuilder(status, ProblemType.ERRO_NEGOCIO, ex.getMessage())
+                .userMessage(ex.getMessage())
+                .build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
-        Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_EM_USO, ex.getMessage()).build();
+        Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_EM_USO, ex.getMessage())
+                .userMessage(ex.getMessage())
+                .build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         if (body == null)
-            body = Problem.builder()
-                .status(status.value())
-                .title(status.getReasonPhrase())
-                .build();
+            body = createProblemBuilderBasic(status).build();
+        else if (body instanceof String)
+            body = createProblemBuilderBasic(status).title((String) body).build();
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
-        return Problem.builder()
+        return createProblemBuilderBasic(status)
                 .type(problemType.getUri())
-                .status(status.value())
                 .title(problemType.getTitle())
                 .detail(detail);
+    }
+
+    private Problem.ProblemBuilder createProblemBuilderBasic(HttpStatus status){
+        return Problem.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .title(status.getReasonPhrase())
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL);
     }
 
     private String joinPath(List<JsonMappingException.Reference> references) {

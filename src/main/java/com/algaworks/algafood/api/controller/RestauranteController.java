@@ -1,4 +1,5 @@
 package com.algaworks.algafood.api.controller;
+
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -17,6 +18,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
 
         return salvarRestaurante(restaurante);
     }

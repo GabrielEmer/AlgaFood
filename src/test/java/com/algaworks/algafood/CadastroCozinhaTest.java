@@ -15,12 +15,13 @@ import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-public class CadastroCozinhaIntegrationTests {
 
-	@Autowired
-	CadastroCozinhaService cozinhaService;
+@ExtendWith(SpringExtension.class)
+@SpringBootTest()
+public class CadastroCozinhaTest {
+
+    @Autowired
+    CadastroCozinhaService cozinhaService;
 
 	@Test
 	public void deveAtribuirIdQuandoCadastrarCozinhaComDadosCorretos() {
@@ -37,31 +38,16 @@ public class CadastroCozinhaIntegrationTests {
 		Cozinha cozinha = new Cozinha();
 		cozinha.setNome(null);
 
-		ConstraintViolationException erroEsperado =
-				Assertions.assertThrows(ConstraintViolationException.class, () -> {
-					cozinhaService.salvar(cozinha);
-				});
-
-		assertThat(erroEsperado).isNotNull();
+        Assertions.assertThrows(ConstraintViolationException.class, () -> cozinhaService.salvar(cozinha));
 	}
 
 	@Test
 	public void deveFalharQuandoExcluirCozinhaEmUso() {
-		EntidadeEmUsoException erroEsperado =
-				Assertions.assertThrows(EntidadeEmUsoException.class, () -> {
-					cozinhaService.excluir(1L);
-				});
-
-		assertThat(erroEsperado).isNotNull();
+        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(1L));
 	}
 
 	@Test
 	public void deveFalharQuandoExcluirCozinhaInexistente() {
-		CozinhaNaoEncontradaException erroEsperado =
-				Assertions.assertThrows(CozinhaNaoEncontradaException.class, () -> {
-					cozinhaService.excluir(9128L);
-				});
-
-		assertThat(erroEsperado).isNotNull();
+        Assertions.assertThrows(CozinhaNaoEncontradaException.class, () -> cozinhaService.excluir(9128L));
 	}
 }

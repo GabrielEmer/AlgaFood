@@ -1,111 +1,53 @@
 package com.algaworks.algafood;
 
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
-import com.algaworks.algafood.util.DatabaseCleaner;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
+import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import javax.validation.ConstraintViolationException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource("/application-test.properties")
+@SpringBootTest()
 public class CadastroCozinhaIT {
 
-	@LocalServerPort
-	private Integer port;
-
-	@Autowired
-	DatabaseCleaner databaseCleaner;
-//	@Autowired
-//	Flyway flyway;
-//	flyway.migrate();
-
-	@BeforeEach
-	public void setUp() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		RestAssured.basePath = "/cozinhas";
-		RestAssured.port = this.port;
-
-		databaseCleaner.clearTables();
-		prepararDados();
-	}
+    @Autowired
+    CadastroCozinhaService cozinhaService;
 
 	@Test
-	public void deveRetornarStatus200QuandoConsultarCozinhas() {
-		given()
-			.accept(ContentType.JSON)
-		.when()
-			.get()
-		.then()
-			.statusCode(HttpStatus.OK.value());
-	}
-
-	@Test
-	public void deveRetornarStatus201QuandoCadastrarCozinha() {
-		given()
-			.body("{ \"nome\": \"Chinesa\" }")
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-		.when()
-			.post()
-		.then()
-			.statusCode(HttpStatus.CREATED.value());
-	}
-
-	@Test
-	public void deveConterDuasCozinhasQuandoConsultarCozinhas() {
-		given()
-			.accept(ContentType.JSON)
-		.when()
-			.get()
-		.then()
-			.body("", Matchers.hasSize(2));
-	}
-
-	@Test
-	public void deveRetornarCozinhaEStatusCorretosQuandoConsultarCozinhaExistente() {
-		given()
-			.accept(ContentType.JSON)
-			.pathParam("cozinhaId", 2)
-		.when()
-			.get("/{cozinhaId}")
-		.then()
-			.body("nome", equalTo("Americana"));
-	}
-
-	@Test
-	public void deveRetornar404QuandoConsultarCozinhaInexistente() {
-		given()
-			.accept(ContentType.JSON)
-			.pathParam("cozinhaId", 100)
-		.when()
-			.get("/{cozinhaId}")
-		.then()
-			.statusCode(HttpStatus.NOT_FOUND.value());
-	}
-
-	@Autowired
-	CozinhaRepository cozinhaRepository;
-	public void prepararDados() {
+	public void deveAtribuirIdQuandoCadastrarCozinhaComDadosCorretos() {
 		Cozinha cozinha = new Cozinha();
-		cozinha.setNome("Brasileira");
-		cozinhaRepository.save(cozinha);
+		cozinha.setNome("Chinesa");
+		Cozinha novaCozinha = cozinhaService.salvar(cozinha);
 
-		cozinha = new Cozinha();
-		cozinha.setNome("Americana");
-		cozinhaRepository.save(cozinha);
+		assertThat(novaCozinha).isNotNull();
+		assertThat(novaCozinha.getId()).isNotNull();
+	}
+
+	@Test
+	public void deveFalharQuandoCadastrarCozinhaSemNome() {
+		Cozinha cozinha = new Cozinha();
+		cozinha.setNome(null);
+
+        Assertions.assertThrows(ConstraintViolationException.class, () -> cozinhaService.salvar(cozinha));
+	}
+
+	@Test
+	public void deveFalharQuandoExcluirCozinhaEmUso() {
+        Assertions.assertThrows(EntidadeEmUsoException.class, () -> cozinhaService.excluir(1L));
+	}
+
+	@Test
+	public void deveFalharQuandoExcluirCozinhaInexistente() {
+        Assertions.assertThrows(CozinhaNaoEncontradaException.class, () -> cozinhaService.excluir(9128L));
 	}
 }

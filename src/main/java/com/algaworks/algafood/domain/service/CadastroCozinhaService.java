@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroCozinhaService {
@@ -15,15 +16,18 @@ public class CadastroCozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
-    public Cozinha salvar(Cozinha cozinha) {
-        return cozinhaRepository.save(cozinha);
-    }
 
     public Cozinha buscar(Long cozinhaId) {
         return cozinhaRepository.findById(cozinhaId).orElseThrow(
                 () -> new CozinhaNaoEncontradaException(cozinhaId));
     }
 
+    @Transactional
+    public Cozinha salvar(Cozinha cozinha) {
+        return cozinhaRepository.save(cozinha);
+    }
+
+    @Transactional
     public void excluir(Long cozinhaId) {
         try {
             cozinhaRepository.deleteById(cozinhaId);

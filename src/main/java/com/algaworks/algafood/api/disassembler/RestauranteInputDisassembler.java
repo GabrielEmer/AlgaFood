@@ -6,13 +6,23 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+
 @Component
 public class RestauranteInputDisassembler {
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private EntityManager manager;
 
     public Restaurante toDomainObject(RestauranteInput restauranteInput) {
         return modelMapper.map(restauranteInput, Restaurante.class);
+    }
+
+    public void copyToDomainObject(RestauranteInput restauranteInput, Restaurante restaurante) {
+        manager.detach(restaurante.getCozinha());
+        modelMapper.map(restauranteInput, restaurante);
     }
 }

@@ -21,13 +21,9 @@ public class Cidade {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @NotNull
-    @Valid
-    @ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
     @ManyToOne
     @JoinColumn(nullable = false)
     private Estado estado;

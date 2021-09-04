@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 public class RestauranteModelAssembler {
 
     @Autowired
-    CozinhaModelAssembler cozinhaModelAssembler;
+    private CozinhaModelAssembler cozinhaModelAssembler;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     public RestauranteModel toModel(Restaurante restaurante){
         return modelMapper.map(restaurante, RestauranteModel.class);

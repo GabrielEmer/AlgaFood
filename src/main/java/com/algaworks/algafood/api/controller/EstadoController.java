@@ -47,7 +47,6 @@ public class EstadoController {
     }
 
     @PutMapping("/{estadoId}")
-    @ResponseStatus(HttpStatus.CREATED)
     public EstadoModel atualizar(@PathVariable("estadoId") Long estadoId, @RequestBody @Valid EstadoInput estado) {
         Estado estadoAtual = cadastroEstado.buscar(estadoId);
         estadoInputDisassembler.copyToDomainObject(estado, estadoAtual);

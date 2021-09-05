@@ -37,10 +37,9 @@ public class CadastroCidadeService {
             cidadeRepository.flush();
         } catch (EmptyResultDataAccessException e){
             throw new CidadeNaoEncontradaException(cidadeId);
-    } catch (DataIntegrityViolationException e) {
-        throw new EntidadeEmUsoException(
-                String.format("Cidade de código %d não pode ser removida pois está em uso", cidadeId)
-        );
+        } catch (DataIntegrityViolationException e) {
+            throw new EntidadeEmUsoException(
+                    String.format("Cidade de código %d não pode ser removida pois está em uso", cidadeId));
         }
     }
 }

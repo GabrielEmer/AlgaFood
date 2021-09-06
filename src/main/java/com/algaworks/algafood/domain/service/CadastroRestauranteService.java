@@ -16,9 +16,13 @@ public class CadastroRestauranteService {
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
 
+    @Autowired
+    private CadastroCidadeService cadastroCidade;
+
     @Transactional
     public Restaurante salvar(Restaurante restaurante) {
         restaurante.setCozinha(cadastroCozinha.buscar(restaurante.getCozinha().getId()));
+        restaurante.getEndereco().setCidade(cadastroCidade.buscar(restaurante.getEndereco().getCidade().getId()));
         return restauranteRepository.save(restaurante);
     }
 

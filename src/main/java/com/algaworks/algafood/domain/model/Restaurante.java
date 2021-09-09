@@ -31,6 +31,8 @@ public class Restaurante {
 
     private Boolean ativo = Boolean.TRUE;
 
+    private Boolean aberto;
+
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
@@ -60,6 +62,12 @@ public class Restaurante {
     }
     public void inativar() {
         setAtivo(false);
+    }
+    public void abrir() {
+        setAberto(true);
+    }
+    public void fechar() {
+        setAberto(false);
     }
 
     public void removerFormaPagamento(FormaPagamento formaPagamento) {

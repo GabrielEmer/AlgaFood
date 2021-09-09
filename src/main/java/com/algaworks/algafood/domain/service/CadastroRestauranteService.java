@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.service;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class CadastroRestauranteService {
 
     @Autowired
     private CadastroCidadeService cadastroCidade;
+
+    @Autowired
+    private CadastroUsuarioService cadastroUsuario;
 
     @Autowired
     private CadastroFormaPagamentoService cadastroFormaPagamentoService;
@@ -73,5 +77,19 @@ public class CadastroRestauranteService {
     public void fechar(Long restauranteId) {
         Restaurante restaurante = buscar(restauranteId);
         restaurante.fechar();
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = cadastroUsuario.buscar(usuarioId);
+        restaurante.adicionarResponsavel(usuario);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = cadastroUsuario.buscar(usuarioId);
+        restaurante.removerResponsavel(usuario);
     }
 }

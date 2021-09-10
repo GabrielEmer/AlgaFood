@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -8,6 +9,8 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class CadastroRestauranteService {
@@ -46,6 +49,30 @@ public class CadastroRestauranteService {
     }
 
     @Transactional
+    public void inativar(Long restauranteId) {
+        Restaurante restaurante = buscar(restauranteId);
+        restaurante.inativar();
+    }
+
+    @Transactional
+    public void ativar(List<Long> restauranteIds) {
+        try {
+            restauranteIds.forEach(this::ativar);
+        } catch (RestauranteNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public void inativar(List<Long> restauranteIds) {
+        try {
+            restauranteIds.forEach(this::inativar);
+        } catch (RestauranteNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @Transactional
     public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
         FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscar(formaPagamentoId);
         Restaurante restaurante = buscar(restauranteId);
@@ -59,12 +86,6 @@ public class CadastroRestauranteService {
         Restaurante restaurante = buscar(restauranteId);
 
         restaurante.adicionarFormaPagamento(formaPagamento);
-    }
-
-    @Transactional
-    public void inativar(Long restauranteId) {
-        Restaurante restaurante = buscar(restauranteId);
-        restaurante.inativar();
     }
 
     @Transactional

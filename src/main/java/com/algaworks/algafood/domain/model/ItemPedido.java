@@ -28,4 +28,8 @@ public class ItemPedido {
   private BigDecimal precoUnitario;
   private BigDecimal precoTotal;
   private String observacao;
+
+  public void calcularPrecoTotal() {
+    setPrecoTotal(precoUnitario.multiply(BigDecimal.valueOf(quantidade)));
+  }
 }

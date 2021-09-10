@@ -1,7 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.assembler.PedidoModelAssembler;
+import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafood.api.model.PedidoModel;
+import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,12 @@ public class PedidoController {
     @Autowired
     private PedidoModelAssembler assembler;
 
+    @Autowired
+    private PedidoResumoModelAssembler resumoAssembler;
+
     @GetMapping
-    public List<PedidoModel> listar() {
-        return assembler.toCollectionModel(pedidoRepository.findAll());
+    public List<PedidoResumoModel> listar() {
+        return resumoAssembler.toCollectionModel(pedidoRepository.findAll());
     }
 
     @GetMapping("/{pedidoId}")

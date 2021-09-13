@@ -31,9 +31,9 @@ public class EmissaoPedidoService {
     @Autowired
     private CadastroUsuarioService cadastroUsuario;
 
-    public Pedido buscar(Long pedidoId) {
-        return pedidoRepository.findById(pedidoId).orElseThrow(
-                () -> new PedidoNaoEncontradoException(pedidoId)
+    public Pedido buscar(String codigoPedido) {
+        return pedidoRepository.findByCodigo(codigoPedido).orElseThrow(
+                () -> new PedidoNaoEncontradoException(codigoPedido)
         );
     }
 

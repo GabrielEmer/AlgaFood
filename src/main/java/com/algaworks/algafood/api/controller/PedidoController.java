@@ -42,9 +42,9 @@ public class PedidoController {
         return resumoAssembler.toCollectionModel(pedidoRepository.findAll());
     }
 
-    @GetMapping("/{pedidoId}")
-    public PedidoModel buscar(@PathVariable Long pedidoId) {
-        return assembler.toModel(emissaoPedido.buscar(pedidoId));
+    @GetMapping("/{codigoPedido}")
+    public PedidoModel buscar(@PathVariable String codigoPedido) {
+        return assembler.toModel(emissaoPedido.buscar(codigoPedido));
     }
 
     @PostMapping

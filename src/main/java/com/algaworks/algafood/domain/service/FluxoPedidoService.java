@@ -1,8 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
-import com.algaworks.algafood.domain.model.StatusPedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,20 +12,20 @@ public class FluxoPedidoService {
     private EmissaoPedidoService emissaoPedido;
 
     @Transactional
-    public void confirmar(Long pedidoId) {
-        Pedido pedido = emissaoPedido.buscar(pedidoId);
+    public void confirmar(String codigoPedido) {
+        Pedido pedido = emissaoPedido.buscar(codigoPedido);
         pedido.confirmar();
     }
 
     @Transactional
-    public void cancelar(Long pedidoId) {
-        Pedido pedido = emissaoPedido.buscar(pedidoId);
+    public void cancelar(String codigoPedido) {
+        Pedido pedido = emissaoPedido.buscar(codigoPedido);
         pedido.cancelar();
     }
 
     @Transactional
-    public void entregar(Long pedidoId) {
-        Pedido pedido = emissaoPedido.buscar(pedidoId);
+    public void entregar(String codigoPedido) {
+        Pedido pedido = emissaoPedido.buscar(codigoPedido);
         pedido.entregar();
     }
 }

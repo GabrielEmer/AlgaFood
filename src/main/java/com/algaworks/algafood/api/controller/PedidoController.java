@@ -11,7 +11,9 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
+import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +40,8 @@ public class PedidoController {
     private PedidoInputDisassembler disassembler;
 
     @GetMapping
-    public List<PedidoResumoModel> listar() {
-        return resumoAssembler.toCollectionModel(pedidoRepository.findAll());
+    public List<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter) {
+        return resumoAssembler.toCollectionModel(pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter)));
     }
 
     @GetMapping("/{codigoPedido}")

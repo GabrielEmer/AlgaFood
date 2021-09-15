@@ -28,7 +28,7 @@ public class PedidoSpecs {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoInicio()));
 
             if (filtro.getDataCriacaoFim() != null)
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoFim()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoFim()));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

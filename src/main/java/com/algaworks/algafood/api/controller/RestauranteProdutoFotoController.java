@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class RestauranteProdutoFotoController {
 
     @PutMapping
     public void atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                          ProdutoFotoInput produtoFotoInput) {
+                          @Valid ProdutoFotoInput produtoFotoInput) {
 
         System.out.println(produtoFotoInput.getArquivo().getContentType());
         System.out.println(produtoFotoInput.getDescricao());

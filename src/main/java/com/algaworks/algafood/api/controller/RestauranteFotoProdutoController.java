@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.model.input.ProdutoFotoInput;
+import com.algaworks.algafood.api.model.input.FotoProdutoInput;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,18 +13,18 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteFotoProdutoController {
 
     @PutMapping
     public void atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                          @Valid ProdutoFotoInput produtoFotoInput) {
+                          @Valid FotoProdutoInput fotoProdutoInput) {
 
-        System.out.println(produtoFotoInput.getArquivo().getContentType());
-        System.out.println(produtoFotoInput.getDescricao());
+        System.out.println(fotoProdutoInput.getArquivo().getContentType());
+        System.out.println(fotoProdutoInput.getDescricao());
 
-        String newFileName = UUID.randomUUID().toString() + "_" + produtoFotoInput.getArquivo().getOriginalFilename();
+        String newFileName = UUID.randomUUID().toString() + "_" + fotoProdutoInput.getArquivo().getOriginalFilename();
         try {
-            produtoFotoInput.getArquivo().transferTo(Paths.get("C:\\Users\\gabriel.emer\\Documents\\Produtos",
+            fotoProdutoInput.getArquivo().transferTo(Paths.get("C:\\Users\\gabriel.emer\\Documents\\Produtos",
                     newFileName));
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,34 +1,36 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.assembler.FotoProdutoModelAssembler;
+import com.algaworks.algafood.api.disassembler.FotoProdutoInputDisassembler;
+import com.algaworks.algafood.api.model.FotoProdutoModel;
 import com.algaworks.algafood.api.model.input.FotoProdutoInput;
+import com.algaworks.algafood.domain.service.CatalogoFotoProdutoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteFotoProdutoController {
 
+    @Autowired
+    private CatalogoFotoProdutoService catalogoFotoProduto;
+
+    @Autowired
+    private FotoProdutoInputDisassembler disassembler;
+
+    @Autowired
+    private FotoProdutoModelAssembler assembler;
+
     @PutMapping
-    public void atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                          @Valid FotoProdutoInput fotoProdutoInput) {
-
-        System.out.println(fotoProdutoInput.getArquivo().getContentType());
-        System.out.println(fotoProdutoInput.getDescricao());
-
-        String newFileName = UUID.randomUUID().toString() + "_" + fotoProdutoInput.getArquivo().getOriginalFilename();
-        try {
-            fotoProdutoInput.getArquivo().transferTo(Paths.get("C:\\Users\\gabriel.emer\\Documents\\Produtos",
-                    newFileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public FotoProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+                                      @Valid FotoProdutoInput fotoProdutoInput) {
+        return assembler.toModel(catalogoFotoProduto.salvar(
+                disassembler.toDomainModel(restauranteId, produtoId, fotoProdutoInput)));
     }
 
 

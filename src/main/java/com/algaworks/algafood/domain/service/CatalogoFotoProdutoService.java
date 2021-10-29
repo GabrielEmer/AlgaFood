@@ -18,23 +18,16 @@ public class CatalogoFotoProdutoService {
     @Autowired
     private FotoStorageService storageService;
 
+    private String nomeArquivoAntigo = null;
+
     @Transactional
     public FotoProduto salvar(FotoProduto foto, InputStream dadosArquivo) {
         deletarFotoSeExistirUmCadastro(foto);
         foto.setNomeArquivo(storageService.gerarNomeArquivo(foto.getNomeArquivo()));
         FotoProduto fotoProduto = produtoRepository.save(foto);
         produtoRepository.flush();
-        armazenarFoto(foto, dadosArquivo);
+        substituirFoto(foto, dadosArquivo);
         return fotoProduto;
-    }
-
-    private void armazenarFoto(FotoProduto foto, InputStream dadosArquivo) {
-        storageService.armazenar(
-                FotoStorageService.NovaFoto.builder()
-                        .nomeArquivo(foto.getNomeArquivo())
-                        .inputStream(dadosArquivo)
-                        .build()
-        );
     }
 
     private void deletarFotoSeExistirUmCadastro(FotoProduto foto) {
@@ -43,6 +36,19 @@ public class CatalogoFotoProdutoService {
                 foto.getProduto().getId()
         );
 
-        fotoExistente.ifPresent(fotoProduto -> produtoRepository.delete(fotoProduto));
+        fotoExistente.ifPresent(fotoProduto -> {
+            this.nomeArquivoAntigo = fotoProduto.getNomeArquivo();
+            produtoRepository.delete(fotoProduto);
+        });
+    }
+
+    private void substituirFoto(FotoProduto foto, InputStream dadosArquivo) {
+        storageService.substituir(
+                nomeArquivoAntigo,
+                FotoStorageService.NovaFoto.builder()
+                        .nomeArquivo(foto.getNomeArquivo())
+                        .inputStream(dadosArquivo)
+                        .build()
+        );
     }
 }

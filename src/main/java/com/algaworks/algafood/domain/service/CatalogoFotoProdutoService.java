@@ -71,4 +71,14 @@ public class CatalogoFotoProdutoService {
         if (mediaTypes.stream().noneMatch(aceita -> aceita.isCompatibleWith(contentType)))
             throw new HttpMediaTypeNotAcceptableException(mediaTypes);
     }
+
+    @Transactional
+    public void removerFoto(Long restauranteId, Long produtoId) {
+        FotoProduto fotoProduto = buscarFoto(restauranteId, produtoId);
+        produtoRepository.delete(fotoProduto);
+        produtoRepository.flush();
+
+        storageService.remover(fotoProduto.getNomeArquivo());
+    }
+
 }

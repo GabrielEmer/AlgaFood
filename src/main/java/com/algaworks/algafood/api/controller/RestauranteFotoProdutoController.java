@@ -4,9 +4,12 @@ import com.algaworks.algafood.api.assembler.FotoProdutoModelAssembler;
 import com.algaworks.algafood.api.disassembler.FotoProdutoInputDisassembler;
 import com.algaworks.algafood.api.model.FotoProdutoModel;
 import com.algaworks.algafood.api.model.input.FotoProdutoInput;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.service.CatalogoFotoProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,9 +37,20 @@ public class RestauranteFotoProdutoController {
         );
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoProdutoModel buscarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         return assembler.toModel(catalogoFotoProduto.buscarFoto(restauranteId, produtoId));
+    }
+
+    @GetMapping(produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<InputStreamResource> buscarArquivoFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+        try {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(new InputStreamResource(catalogoFotoProduto.buscarArquivoFoto(restauranteId, produtoId)));
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

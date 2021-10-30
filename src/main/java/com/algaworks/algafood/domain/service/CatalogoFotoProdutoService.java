@@ -57,4 +57,8 @@ public class CatalogoFotoProdutoService {
         return produtoRepository.findFotoById(restauranteId, produtoId)
                 .orElseThrow(() -> new FotoProdutoNaoEncontradaException(produtoId, restauranteId));
     }
+
+    public InputStream buscarArquivoFoto(Long restauranteId, Long produtoId) {
+        return storageService.recuperar(buscarFoto(restauranteId, produtoId).getNomeArquivo());
+    }
 }

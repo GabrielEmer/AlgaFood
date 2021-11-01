@@ -62,7 +62,7 @@ public class CatalogoFotoProdutoService {
                 .orElseThrow(() -> new FotoProdutoNaoEncontradaException(produtoId, restauranteId));
     }
 
-    public InputStream buscarArquivoFoto(Long restauranteId, Long produtoId, List<MediaType> mediaTypes) throws HttpMediaTypeNotAcceptableException {
+    public FotoStorageService.FotoRecuperada buscarArquivoFoto(Long restauranteId, Long produtoId, List<MediaType> mediaTypes) throws HttpMediaTypeNotAcceptableException {
         FotoProduto fotoProduto = buscarFoto(restauranteId, produtoId);
         verificarCompatibilidadeMediaType(MediaType.parseMediaType(fotoProduto.getContentType()), mediaTypes);
         return storageService.recuperar(fotoProduto.getNomeArquivo());

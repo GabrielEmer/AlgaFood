@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,9 +16,11 @@ public class LocalFotoStorageService implements FotoStorageService {
     private StorageProperties storageProperties;
 
     @Override
-    public InputStream recuperar(String nomeArquivo) {
+    public FotoRecuperada recuperar(String nomeArquivo) {
         try {
-            return Files.newInputStream(getArquivoPath(nomeArquivo));
+            return FotoRecuperada.builder()
+                    .inputStream(Files.newInputStream(getArquivoPath(nomeArquivo)))
+                    .build();
         } catch (IOException e) {
             throw new StorageException(String.format("Não foi possível recuperar o arquivo %s", nomeArquivo), e);
         }

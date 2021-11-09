@@ -21,7 +21,15 @@ public class EmailProperties {
     @NotNull
     private TipoEnvio tipoEnvio = TipoEnvio.FAKE;
 
+    private Sandbox sandbox = new Sandbox();
+
     public enum TipoEnvio {
-        FAKE, SMTP
+        FAKE, SMTP, SANDBOX
+    }
+
+    @Getter
+    @Setter
+    public class Sandbox {
+        private String destinatario;
     }
 }

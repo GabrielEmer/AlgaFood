@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "http://api.algafood.local:8000", maxAge = 10)
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {

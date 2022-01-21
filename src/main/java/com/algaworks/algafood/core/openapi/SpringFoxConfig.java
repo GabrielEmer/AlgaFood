@@ -20,7 +20,7 @@ public class SpringFoxConfig {
                 .select()
                     .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
                     .paths(PathSelectors.any())
-//                  .paths(PathSelectors.ant("/restaurantes/*"))
+//                  .paths(PathSelectors.ant("/restaurantes/*"))\
                     .build()
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as cidades"));

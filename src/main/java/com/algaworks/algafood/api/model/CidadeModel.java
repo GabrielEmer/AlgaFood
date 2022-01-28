@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class CidadeModel {
 
-    @ApiModelProperty(example = "1")
+    @ApiModelProperty(example = "1", required = true)
     private Long id;
     @ApiModelProperty(example = "Uberlândia")
     private String nome;

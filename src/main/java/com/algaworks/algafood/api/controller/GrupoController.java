@@ -10,6 +10,7 @@ import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,23 +32,23 @@ public class GrupoController implements GrupoControllerOpenApi {
     @Autowired
     private GrupoInputDisassembler disassembler;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GrupoModel> listar() {
         return assembler.toCollectionModel(grupoRepository.findAll());
     }
 
-    @GetMapping("/{grupoId}")
+    @GetMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GrupoModel buscar(@PathVariable Long grupoId) {
         return assembler.toModel(cadastroGrupo.buscar(grupoId));
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public GrupoModel adicionar(@RequestBody @Valid GrupoInput grupo) {
         return assembler.toModel(cadastroGrupo.salvar(disassembler.toDomainObject(grupo)));
     }
 
-    @PutMapping("/{grupoId}")
+    @PutMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GrupoModel atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInput grupo) {
         Grupo grupoAtual = cadastroGrupo.buscar(grupoId);
         disassembler.copyToDomainObject(grupo, grupoAtual);

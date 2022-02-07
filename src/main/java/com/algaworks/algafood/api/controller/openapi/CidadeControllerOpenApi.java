@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 
 @Api(tags = "Cidades")
-public interface CidadeControlerOpenApi {
+public interface CidadeControllerOpenApi {
 
     @ApiOperation("Lista as cidades")
     public List<CidadeModel> listar ();
@@ -41,7 +41,9 @@ public interface CidadeControlerOpenApi {
     })
     public CidadeModel atualizar(
             @ApiParam(value = "ID de uma cidade", example = "1")
-            Long cidadeId, CidadeInput cidade);
+            Long cidadeId,
+            @ApiParam(name = "corpo", value = "Representação de uma nova cidade")
+            CidadeInput cidade);
 
     @ApiOperation("Exclui uma cidade por ID")
     @ApiResponses({

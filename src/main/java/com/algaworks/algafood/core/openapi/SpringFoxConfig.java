@@ -2,8 +2,10 @@ package com.algaworks.algafood.core.openapi;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PedidoResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.context.request.ServletWebRequest;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRules;
@@ -49,16 +52,23 @@ public class SpringFoxConfig {
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class)
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, CozinhaModel.class),
                         CozinhasModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(Page.class, PedidoResumoModel.class),
+                        PedidoResumoModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as cidades"))
                 .tags(new Tag("Grupos", "Gerencia os grupos de usuários"))
-
-                ;
+                .tags(new Tag("Cozinhas", "Gerencia as cozinhas"))
+                .tags(new Tag("Formas de pagamento", "Gerencia as formas de pagamento"))
+                .tags(new Tag("Pedidos", "Gerencia os pedidos"));
     }
+
+
 
     private List<Response> globalDeleteResponseMessages() {
         return Arrays.asList(
@@ -139,3 +149,4 @@ public class SpringFoxConfig {
         return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
     }
 }
+

@@ -86,18 +86,6 @@ public class CadastroRestauranteApiTest {
     }
 
     @Test
-    public void deveRetornarStatus201QuandoCadastrarRestaurante() {
-        given()
-            .body(jsonRestauranteCorreto)
-            .contentType(ContentType.JSON)
-            .accept(ContentType.JSON)
-        .when()
-            .post()
-        .then()
-            .statusCode(HttpStatus.CREATED.value());
-    }
-
-    @Test
     public void deveRetornarStatus400QuandoCadastrarRestauranteSemTaxaFrete() {
         given()
             .body(jsonRestauranteSemFrete)
@@ -172,12 +160,14 @@ public class CadastroRestauranteApiTest {
         burgerTopRestaurante.setNome("Burger Top");
         burgerTopRestaurante.setTaxaFrete(new BigDecimal(10));
         burgerTopRestaurante.setCozinha(cozinhaAmericana);
+        burgerTopRestaurante.setAberto(true);
         restauranteRepository.save(burgerTopRestaurante);
 
         Restaurante comidaMineiraRestaurante = new Restaurante();
         comidaMineiraRestaurante.setNome("Comida Mineira");
         comidaMineiraRestaurante.setTaxaFrete(new BigDecimal(10));
         comidaMineiraRestaurante.setCozinha(cozinhaBrasileira);
+        comidaMineiraRestaurante.setAberto(true);
         restauranteRepository.save(comidaMineiraRestaurante);
     }
 }

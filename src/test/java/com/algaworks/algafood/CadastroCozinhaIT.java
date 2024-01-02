@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ConstraintViolationException;
@@ -26,7 +27,7 @@ public class CadastroCozinhaIT {
 	@Test
 	public void deveAtribuirIdQuandoCadastrarCozinhaComDadosCorretos() {
 		Cozinha cozinha = new Cozinha();
-		cozinha.setNome("Chinesa");
+		cozinha.setNome("Teste");
 		Cozinha novaCozinha = cozinhaService.salvar(cozinha);
 
 		assertThat(novaCozinha).isNotNull();
@@ -38,7 +39,7 @@ public class CadastroCozinhaIT {
 		Cozinha cozinha = new Cozinha();
 		cozinha.setNome(null);
 
-        Assertions.assertThrows(ConstraintViolationException.class, () -> cozinhaService.salvar(cozinha));
+        Assertions.assertThrows(DataIntegrityViolationException.class, () -> cozinhaService.salvar(cozinha));
 	}
 
 	@Test

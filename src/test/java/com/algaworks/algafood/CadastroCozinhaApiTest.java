@@ -77,7 +77,7 @@ public class CadastroCozinhaApiTest {
 		.when()
 			.get()
 		.then()
-			.body("", Matchers.hasSize(2));
+			.body("content", Matchers.hasSize(2));
 	}
 
 	@Test

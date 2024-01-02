@@ -3,5 +3,15 @@
   "taxaFrete": 12,
   "cozinha": {
     "id": 200
+  },
+  "endereco": {
+    "cep": "12312312",
+    "logradouro": "Avenida das Flores",
+    "numero": "2135",
+    "complemento": null,
+    "bairro": "Bonito",
+    "cidade": {
+      "id": 1
+    }
   }
-}\
+}

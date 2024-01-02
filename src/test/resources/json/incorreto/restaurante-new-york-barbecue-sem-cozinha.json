@@ -1,4 +1,5 @@
 {
   "nome": "New York Barbecue",
-  "taxaFrete": 12
+  "taxaFrete": 12,
+  "endereco": {}
 }

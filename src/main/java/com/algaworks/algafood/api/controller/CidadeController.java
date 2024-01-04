@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
 import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.disassembler.CidadeInputDisassembler;
@@ -47,7 +48,10 @@ public class CidadeController implements CidadeControllerOpenApi {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeModel adicionar(@RequestBody @Valid CidadeInput cidade) {
-        return salvarCidade(cidadeInputDisassembler.toDomainObject(cidade));
+        CidadeModel cidadeModel = salvarCidade(cidadeInputDisassembler.toDomainObject(cidade));
+
+        ResourceUriHelper.addUriInResponseHeader(cidadeModel.getId());
+        return cidadeModel;
     }
 
     @PutMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)

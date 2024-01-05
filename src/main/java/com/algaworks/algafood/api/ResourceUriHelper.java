@@ -1,12 +1,12 @@
 package com.algaworks.algafood.api;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 
 import static org.springframework.http.HttpHeaders.LOCATION;

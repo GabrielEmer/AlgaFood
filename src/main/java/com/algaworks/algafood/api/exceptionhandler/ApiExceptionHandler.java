@@ -47,23 +47,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers,
-                                                                      HttpStatus status, WebRequest request) {
-        return ResponseEntity.status(status).headers(headers).build();
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
-                                                                  HttpStatus status, WebRequest request) {
-        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
-    }
+//TODO: Corrigir as exceptions que nao foram mais encontradas
+//    @Override
+//    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers,
+//                                                                      HttpStatus status, WebRequest request) {
+//        return ResponseEntity.status(status).headers(headers).build();
+//    }
+//
+//    @Override
+//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+//    }
+//
+//    @Override
+//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+//                                                                  HttpStatus status, WebRequest request) {
+//        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+//    }
 
     private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers, HttpStatus status,
                                                             WebRequest request, BindingResult bindingResult) {
@@ -84,33 +84,33 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
-                                                                   HttpStatus status, WebRequest request) {
-        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADA,
-                String.format("O recurso %s, que você tentou acessar é inexistente.", ex.getRequestURL())).build();
-
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
-                                                                  HttpStatus status, WebRequest request) {
-        Throwable rootCause = ExceptionUtils.getRootCause(ex);
-
-        if (rootCause instanceof InvalidFormatException) {
-            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
-        }
-
-        if (rootCause instanceof PropertyBindingException) {
-            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
-        }
-
-        Problem problem = createProblemBuilder(status, ProblemType.REQUISICAO_INVALIDA,
-                "O corpo da requisição está inválido. Verifique erro de sintaxe").build();
-
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+//                                                                   HttpStatus status, WebRequest request) {
+//        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADA,
+//                String.format("O recurso %s, que você tentou acessar é inexistente.", ex.getRequestURL())).build();
+//
+//        return handleExceptionInternal(ex, problem, headers, status, request);
+//    }
+//
+//    @Override
+//    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+//                                                                  HttpStatus status, WebRequest request) {
+//        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+//
+//        if (rootCause instanceof InvalidFormatException) {
+//            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
+//        }
+//
+//        if (rootCause instanceof PropertyBindingException) {
+//            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
+//        }
+//
+//        Problem problem = createProblemBuilder(status, ProblemType.REQUISICAO_INVALIDA,
+//                "O corpo da requisição está inválido. Verifique erro de sintaxe").build();
+//
+//        return handleExceptionInternal(ex, problem, headers, status, request);
+//    }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers,
@@ -134,15 +134,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        if (ex instanceof MethodArgumentTypeMismatchException) {
-            return handleMethodArgumentTypeMismatch((MethodArgumentTypeMismatchException) ex, headers, status, request);
-        }
-
-        return super.handleTypeMismatch(ex, headers, status, request);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//
+//        if (ex instanceof MethodArgumentTypeMismatchException) {
+//            return handleMethodArgumentTypeMismatch((MethodArgumentTypeMismatchException) ex, headers, status, request);
+//        }
+//
+//        return super.handleTypeMismatch(ex, headers, status, request);
+//    }
 
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers,
                                                           HttpStatus status, WebRequest request) {
@@ -181,15 +181,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        if (body == null)
-            body = createProblemBuilderBasic(status).build();
-        else if (body instanceof String)
-            body = createProblemBuilderBasic(status).title((String) body).build();
-
-        return super.handleExceptionInternal(ex, body, headers, status, request);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        if (body == null)
+//            body = createProblemBuilderBasic(status).build();
+//        else if (body instanceof String)
+//            body = createProblemBuilderBasic(status).title((String) body).build();
+//
+//        return super.handleExceptionInternal(ex, body, headers, status, request);
+//    }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
         return createProblemBuilderBasic(status)

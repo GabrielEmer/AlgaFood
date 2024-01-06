@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/cidades")
@@ -47,18 +48,13 @@ public class CidadeController implements CidadeControllerOpenApi {
     @GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CidadeModel buscar (@PathVariable Long cidadeId) {
         CidadeModel cidadeModel = cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
-        cidadeModel.add(linkTo(CidadeController.class)
-                .slash(cidadeModel.getId()).withSelfRel());
 
-//        cidadeModel.add(Link.of("localhost:8080/cidades/" + cidadeModel.getId()));
-        cidadeModel.add(linkTo(CidadeController.class)
-                .withRel("cidades"));
+        cidadeModel.add(linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId())).withSelfRel());
 
-//        cidadeModel.add(Link.of("localhost:8080/cidades", "cidades"));
+        cidadeModel.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
 
-        cidadeModel.getEstado().add(linkTo(EstadoController.class)
-                .slash(cidadeModel.getEstado().getId()).withSelfRel());
-//        cidadeModel.getEstado().add(Link.of("localhost:8080/estados/" + cidadeModel.getEstado().getId()));
+        cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
+                .buscar(cidadeModel.getEstado().getId())).withSelfRel());
         return cidadeModel;
     }
 

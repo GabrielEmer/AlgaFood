@@ -19,7 +19,7 @@ public class PedidoSpecs {
             var predicates = new ArrayList<Predicate>();
 
             if (filtro.getClienteId() != null)
-                predicates.add(criteriaBuilder.equal(root.get("cliente"), filtro.getClienteId()));
+                predicates.add(criteriaBuilder.equal(root.get("cliente").get("id"), filtro.getClienteId()));
 
             if (filtro.getRestauranteId() != null)
                 predicates.add(criteriaBuilder.equal(root.get("restaurante").get("id"), filtro.getRestauranteId()));

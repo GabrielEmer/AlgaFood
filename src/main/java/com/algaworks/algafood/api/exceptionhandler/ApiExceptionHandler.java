@@ -53,10 +53,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                       HttpStatusCode status, WebRequest request) {
         return ResponseEntity.status(status).headers(headers).build();
     }
-    @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
-    }
+//    TODO: Verificar depois esse metodo deprecated
+//    @Override
+//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+//        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+//    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
@@ -208,7 +209,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return Problem.builder()
                 .timestamp(OffsetDateTime.now())
                 .status(status.value())
-                .title()
+                .title(title)
                 .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL);
     }
 

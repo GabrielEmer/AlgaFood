@@ -2,21 +2,22 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeModelAssembler;
-import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.disassembler.CidadeInputDisassembler;
 import com.algaworks.algafood.api.model.CidadeModel;
 import com.algaworks.algafood.api.model.input.CidadeInput;
+import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -42,7 +43,11 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     @GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CidadeModel buscar (@PathVariable Long cidadeId) {
-        return cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
+        CidadeModel cidadeModel = cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
+        cidadeModel.add(Link.of("localhost:8080/cidades/" + cidadeModel.getId()));
+        cidadeModel.add(Link.of("localhost:8080/cidades", "cidades"));
+        cidadeModel.getEstado().add(Link.of("localhost:8080/estados/" + cidadeModel.getEstado().getId()));
+        return cidadeModel;
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

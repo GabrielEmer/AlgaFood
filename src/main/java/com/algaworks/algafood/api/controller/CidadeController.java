@@ -14,11 +14,14 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/cidades")
@@ -44,9 +47,18 @@ public class CidadeController implements CidadeControllerOpenApi {
     @GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CidadeModel buscar (@PathVariable Long cidadeId) {
         CidadeModel cidadeModel = cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
-        cidadeModel.add(Link.of("localhost:8080/cidades/" + cidadeModel.getId()));
-        cidadeModel.add(Link.of("localhost:8080/cidades", "cidades"));
-        cidadeModel.getEstado().add(Link.of("localhost:8080/estados/" + cidadeModel.getEstado().getId()));
+        cidadeModel.add(linkTo(CidadeController.class)
+                .slash(cidadeModel.getId()).withSelfRel());
+
+//        cidadeModel.add(Link.of("localhost:8080/cidades/" + cidadeModel.getId()));
+        cidadeModel.add(linkTo(CidadeController.class)
+                .withRel("cidades"));
+
+//        cidadeModel.add(Link.of("localhost:8080/cidades", "cidades"));
+
+        cidadeModel.getEstado().add(linkTo(EstadoController.class)
+                .slash(cidadeModel.getEstado().getId()).withSelfRel());
+//        cidadeModel.getEstado().add(Link.of("localhost:8080/estados/" + cidadeModel.getEstado().getId()));
         return cidadeModel;
     }
 

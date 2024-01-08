@@ -13,8 +13,7 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +40,15 @@ public class CidadeController implements CidadeControllerOpenApi {
     private CidadeInputDisassembler cidadeInputDisassembler;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CidadeModel> listar () {
-        return cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
+    public CollectionModel<CidadeModel> listar () {
+        CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel
+                .of(cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll()));
+
+        cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
+
+        cidadesCollectionModel.forEach(cidadeModel -> cidadeModel.add(linkTo(methodOn(CidadeController.class)
+                .buscar(cidadeModel.getId())).withSelfRel()));
+        return cidadesCollectionModel;
     }
 
     @GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)

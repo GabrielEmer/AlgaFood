@@ -41,27 +41,12 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public CollectionModel<CidadeModel> listar () {
-        CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel
-                .of(cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll()));
-
-        cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
-
-        cidadesCollectionModel.forEach(cidadeModel -> cidadeModel.add(linkTo(methodOn(CidadeController.class)
-                .buscar(cidadeModel.getId())).withSelfRel()));
-        return cidadesCollectionModel;
+        return cidadeModelAssembler.toCollectionModel(cidadeRepository.findAll());
     }
 
     @GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CidadeModel buscar (@PathVariable Long cidadeId) {
-        CidadeModel cidadeModel = cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId())).withSelfRel());
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-
-        cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeModel.getEstado().getId())).withSelfRel());
-        return cidadeModel;
+        return cidadeModelAssembler.toModel(cadastroCidade.buscar(cidadeId));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

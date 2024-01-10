@@ -55,7 +55,8 @@ public class PedidoController implements PedidoControllerOpenApi {
     public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter,
                                                    @PageableDefault(size = 10) Pageable pageable) {
         Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), traduzirPageable(pageable));
-        return pagedResourcesAssembler.toModel(pedidoPage, resumoAssembler);
+        return pagedResourcesAssembler
+                .toModel(new PageImpl<>(pedidoPage.getContent(), pageable, pedidoPage.getTotalElements()), resumoAssembler);
     }
 
     @GetMapping("/{codigoPedido}")

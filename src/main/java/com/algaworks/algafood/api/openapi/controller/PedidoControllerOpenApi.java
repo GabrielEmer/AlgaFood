@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.PagedModel;
 
 @Api(tags = "Pedidos")
 public interface PedidoControllerOpenApi {
@@ -22,8 +23,8 @@ public interface PedidoControllerOpenApi {
                     name = "campos", paramType = "query", type = "string")
     })
     @ApiOperation("Pesquisa os pedidos")
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter,
-                                             @PageableDefault(size = 10) Pageable pageable);
+    public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter,
+                                                   @PageableDefault(size = 10) Pageable pageable);
 
     @ApiOperation("Registra um pedido")
     @ApiResponses({

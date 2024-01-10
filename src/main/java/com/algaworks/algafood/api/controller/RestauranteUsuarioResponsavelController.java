@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/responsaveis")
 public class RestauranteUsuarioResponsavelController {
@@ -22,7 +25,9 @@ public class RestauranteUsuarioResponsavelController {
 
     @GetMapping
     public CollectionModel<UsuarioModel> listar(@PathVariable Long restauranteId) {
-        return usuarioModelAssembler.toCollectionModel(cadastroRestaurante.buscar(restauranteId).getResponsaveis());
+        return usuarioModelAssembler.toCollectionModel(cadastroRestaurante.buscar(restauranteId).getResponsaveis())
+                .removeLinks()
+                .add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId)).withSelfRel());
     }
 
     @PutMapping("/{usuarioId}")

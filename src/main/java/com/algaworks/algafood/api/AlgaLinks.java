@@ -3,10 +3,12 @@ package com.algaworks.algafood.api;
 import com.algaworks.algafood.api.controller.*;
 import com.algaworks.algafood.domain.model.Usuario;
 import org.springframework.hateoas.*;
+import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Component
 public class AlgaLinks {
 
     public static final TemplateVariables PAGINACAO_VARIABLES = new TemplateVariables(
@@ -25,6 +27,18 @@ public class AlgaLinks {
         String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
 
         return Link.of(UriTemplate.of(pedidosUrl, PAGINACAO_VARIABLES.concat(filtroVariables)), "pedidos");
+    }
+
+    public Link linkToConfirmacaoPedido(String codigoPedido, String rel){
+        return linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido)).withRel(rel);
+    }
+
+    public Link linkToEntregaPedido(String codigoPedido, String rel){
+        return linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido)).withRel(rel);
+    }
+
+    public Link linkToCancelamentoPedido(String codigoPedido, String rel){
+        return linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido)).withRel(rel);
     }
 
     public Link linkToRestaurante(Long restauranteId, String rel) {

@@ -78,6 +78,18 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
     getItens().forEach(item -> item.setPedido(this));
   }
 
+  public boolean podeSerConfirmado(){
+    return this.getStatus().podeAlterarPara(StatusPedido.CONFIRMADO);
+  }
+
+  public boolean podeSerEntregue(){
+    return this.getStatus().podeAlterarPara(StatusPedido.ENTREGUE);
+  }
+
+  public boolean podeSerCancelado(){
+    return this.getStatus().podeAlterarPara(StatusPedido.CANCELADO);
+  }
+
   public void confirmar() {
     setStatus(StatusPedido.CONFIRMADO);
     setDataConfirmacao(OffsetDateTime.now());
